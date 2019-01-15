@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="https://bucket.shaoqunliu.cn/docsify-cache/statics/css/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'Shaoqun Liu bites WTH',
+      repo: 'LiuinStein',
+      notFoundPage: true,
+      disqus: 'liuinstein',
+      loadSidebar: true,
+      subMaxLevel: 4,
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
+      basePath: '/',
+      search: {
+        noData: {
+          '/': 'No results'
+        },
+        paths: 'auto',
+        placeholder: {
+          '/': 'Type to search'
+        },
+        depth: 6
+      },
+      markdown: {
+        renderer: {
+          code: function(code, lang) {
+            if (lang === "mermaid") {
+              return (
+                '<div class="mermaid">' + mermaid.render('mermaid-svg-' + id++, code) + "</div>"
+              );
+            }
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      },
+      plugins: [
+        function (hook, vm) {
+            hook.doneEach(function (html) {
+              Prism.highlightAll() // Code Highlighting
+              if (typeof MathJax !== 'undefined') {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+              }
+            })
+        }
+      ]
+    }
+  </script>
+
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/docsify.min.js"></script> 
+
+  <!-- LaTeX -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      messageStyle: "none",
+      extensions: ["tex2jax.js","MathZoom.js"],
+      jax: ["input/TeX", "output/SVG"],
+      tex2jax: {
+        inlineMath: [['$','$']],
+        displayMath: [['$$','$$']],
+        processEscapes: true
+      },
+      TeX: {
+        extensions: [
+          "noUndefined.js", 
+          "autoload-all.js", 
+          "AMSmath.js", 
+          "AMSsymbols.js", 
+          "mediawiki-texvc.js"
+        ]
+			},
+      SVG: {
+        useGlobalCache: false,
+        styles: {
+          ".MathJax_Display": {
+            "text-align"  : "center",
+            "line-height" : "1em",
+            "margin"      : "1em 0em"
+          }
+        },
+				merrorStyle: {
+					fontSize:"90%", color:"red", background:"",
+      				border: "1px solid red", padding:"2px"
+        },
+				scale: 120, 
+				minScaleAdjust: 100,
+				blacker: 0
+      },
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+      showMathMenu: false,
+      menuSettings: {
+        zoom: "Hover",
+        renderer: "SVG"
+      }
+    });
+    MathJax.Hub.Register.LoadHook("[MathJax]/jax/output/HTML-CSS/config.js",function () {
+      MathJax.OutputJax["HTML-CSS"].webfontDir =
+         "https://bucket.shaoqunliu.cn/docsify-cache/statics/js/mathjax/fonts/HTML-CSS";
+    });
+  </script>
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  <!-- Code Highlighting -->
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/prism/prism-core.min.js"></script>
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/prism/prism-autoloader.min.js"></script>
+  <script>
+    Prism.plugins.autoloader.languages_path = 'https://bucket.shaoqunliu.cn/docsify-cache/statics/js/prism/components/';
+  </script>
+
+  <!-- Disqus -->
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/disqus.min.js"></script>
+
+  <!-- Zoom image -->
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/zoom-image.js"></script>
+
+  <!-- Search -->
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/search.min.js"></script>
+
+  <!-- Emoji -->
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/emoji.js"></script>
+
+</body>
+</html>
