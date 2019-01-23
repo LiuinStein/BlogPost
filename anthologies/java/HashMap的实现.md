@@ -1,10 +1,42 @@
-### 0x00 理论知识
+### 0x00 背景知识
 
 首先`HashMap`是基于hash表的，hash表的相关知识及其存储原理，可以参考我之前写的一篇文章：[查找算法总结](/anthologies/algorithm/查找?id=_0x02-哈希表)，要着重看此文章关于冲突处理所讲述的拉链法。
 
 ![](https://bucket.shaoqunliu.cn/image/0209.png)
 
 我们仅在这稍微明确一点概念：首先对于拉链式的hash表，其是由数组和链表共同组成的，当然Java中还引入了红黑树，当链表长度大于8时，将链表转为红黑树以提高查找效率。我们先来看上面的这个图，保存这个hash表的数组称之为桶（bucket），而每个桶中保存了一系列的数据入口（entries）。
+
+同理，我们在这明确一个概念“**等同**”：我们假定如果两个对象其`hashCode`相同，且任一一个调用`equals`方法与另一个返回`true`，即认为两个对象等同。
+
+同时，在`HashMap`中有如下几个量需要注意，代码如下：
+
+```java
+/**
+ * The number of key-value mappings contained in this map.
+ */
+// MAP中所包含的键值对的数量
+transient int size;
+
+/**
+ * The next size value at which to resize (capacity * load factor).
+ *
+ * @serial
+ */
+// (The javadoc description is true upon serialization.
+// Additionally, if the table array has not been allocated, this
+// field holds the initial array capacity, or zero signifying
+// DEFAULT_INITIAL_CAPACITY.)
+// 阈值，超过此阈值就会诱发桶的扩容操作，值为：桶的容量乘以装填因子
+int threshold;
+
+/**
+ * The load factor for the hash table.
+ *
+ * @serial
+ */
+// 装填因子
+final float loadFactor;
+```
 
 ### 0x01 put方法
 
@@ -24,48 +56,33 @@ public V put(K key, V value) {
 
 其直接将工作转交至了`putVal`方法中，我们直接来看`putVal`的代码：
 
-方法签名：
-
 ```java
 final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                 boolean evict) {
-```
-
-如果桶为空或者长度为0的话，那么调用`resize`方法对其进行扩容
-
-```java
+    // 如果桶为空或者长度为0的话，那么调用resize方法对其进行扩容
     Node<K,V>[] tab; Node<K,V> p; int n, i;
     if ((tab = table) == null || (n = tab.length) == 0)
         n = (tab = resize()).length;
-```
-
-通过`(n - 1) & hash`（其中n为桶的长度，hash为依据key所计算的hash码值）计算当前元素对应在`table`数组（桶）中的下标，如果`table`数组中此项为空（意味着没有冲突发生）那就直接在此项处新建一个Node直接将其插入。
-
-```java
+    // 通过(n - 1) & hash计算当前元素对应在table数组（桶）中的下标
+    // 其中n为桶的长度，hash为依据key所计算的hash码值
+    // 如果table数组中此项为空，意味着没有冲突发生
+    // 那就直接在此项处新建一个Node直接将其插入
     if ((p = tab[i = (n - 1) & hash]) == null)
         tab[i] = newNode(hash, key, value, null);
-```
-
-如果桶中已经有了至少一个元素，首先判断链表的第一个结点与当前所插入的结点的`key`是否等同（`key`的hash相同并且`equals`方法返回`true`被认为等同），如果相同的话，则将标记e指向p。
-
-```java
+    // 如果桶中已经有了至少一个元素
     else {
         Node<K,V> e; K k;
+        // 首先判断链表的第一个结点与当前所插入的结点的`key`是否等同
+        // 其中key的hash相同并且equals方法返回true被认为等同
         if (p.hash == hash &&
             ((k = p.key) == key || (key != null && key.equals(k))))
+            // 如果等同的话，则将标记e指向p
             e = p;
-```
-
-如果桶的entry类型为`TreeNode`的话，那就调用红黑树的插入方法，将此键值对插入。
-
-```java
+        // 如果桶的entry类型为TreeNode的话
         else if (p instanceof TreeNode)
-            e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
-```
-
-否则调用链表的插入方法，目标在链表尾部插入此结点：
-
-```JAVA
+            // 那就调用红黑树的插入方法，将此键值对插入
+            e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value); 
+        // 否则调用链表的插入方法，目标在链表尾部插入此结点
         else {
             for (int binCount = 0; ; ++binCount) {
                 // 如果抵达链表尾部
@@ -79,24 +96,19 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                         treeifyBin(tab, hash);
                     break;
                 }
-```
-
-如果在链表中找到了和插入键值对`key`等同的结点，则退出循环：
-
-```java
+                // 如果在链表中找到了和插入键值对key等同的结点则退出循环
                 if (e.hash == hash &&
                     ((k = e.key) == key || (key != null && key.equals(k))))
                     break;
                 p = e;
             }
         }
-```
-
-如果标记`e`不为`null`的话，即在当前hash表中找到了与所要插入的键值对的`key`相同的结点，`onlyIfAbsent`即为是否仅在`oldValue`为`null`的情况下更新键值对，这个参数在`put`方法中被默认给定为`false`：
-
-```java
+        // 如果标记e不为null的话
+        // 即在当前hash表中找到了与所要插入的键值对的key相同的结点
         if (e != null) { // existing mapping for key
             V oldValue = e.value;
+            // onlyIfAbsent即为是否仅在oldValue为null的情况下更新键值对
+            // 这个参数在put方法中被默认给定为false
             if (!onlyIfAbsent || oldValue == null)
                 e.value = value;
             afterNodeAccess(e);
@@ -104,11 +116,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
         }
     }
     ++modCount; 
-```
-
-键值对数量超过阈值时，调用`resize`方法进行扩容对桶进行扩容：
-
-```java
+    // 键值对数量超过阈值时，调用resize方法进行扩容对桶进行扩容
     if (++size > threshold)
         resize();
     afterNodeInsertion(evict);
@@ -116,13 +124,116 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 }
 ```
 
-在上述两个代码片中，我们可以看到两个方法`afterNodeAccess`和`afterNodeInsertion`这两个方法在`HashMap`里面的实现是空的，在此处什么都不做，其注释中写道：Callbacks to allow `LinkedHashMap ` post-actions，即适用于`LinkedHashMap `实现一些后置功能的回调函数。
+在上述两个代码中，我们可以看到两个方法`afterNodeAccess`和`afterNodeInsertion`这两个方法在`HashMap`里面的实现是空的，在此处什么都不做，其注释中写道：Callbacks to allow `LinkedHashMap ` post-actions，即适用于`LinkedHashMap `实现一些后置功能的回调函数。
 
 ### 0x02 get方法
 
+先来看一下`get`方法：
+
+```java
+public V get(Object key) {
+    Node<K,V> e;
+    return (e = getNode(hash(key), key)) == null ? null : e.value;
+}
+```
+
+其主要工作在`getNode`方法中，用于通过键值`hash`和键值对象获取`Node`，如果其得到的值为`null`那就返回`null`，否则返回`Node`对象的`value`，我们着重来看`getNode`方法：
+
+```java
+final Node<K,V> getNode(int hash, Object key) {
+    Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+    // 首先检查桶是否为空，如果不为空的话，检查键值所在桶的位置是否为空
+    // 如果二者均为空的话，返回null查找失败
+    if ((tab = table) != null && (n = tab.length) > 0 &&
+        (first = tab[(n - 1) & hash]) != null) {
+        // 检查第一个是否等同
+        if (first.hash == hash && // always check first node
+            ((k = first.key) == key || (key != null && key.equals(k))))
+            return first;
+        if ((e = first.next) != null) {
+            // 如果桶的entry类型为TreeNode的话
+            if (first instanceof TreeNode)
+                // 在entry所指定的红黑树中查找相关键值
+                return ((TreeNode<K,V>)first).getTreeNode(hash, key);
+            // 在链表中查找相关键值
+            do {
+                if (e.hash == hash &&
+                    ((k = e.key) == key || (key != null && key.equals(k))))
+                    return e;
+            } while ((e = e.next) != null);
+        }
+    } 
+    // 查找失败
+    return null;
+}
+```
+
+### 0x03 remove方法
+
+`remove`方法用于从`HashMap`中移除一个元素，代码如下：
+
+```java
+public V remove(Object key) {
+    Node<K,V> e;
+    return (e = removeNode(hash(key), key, null, false, true)) == null ? null : e.value;
+}
+```
+
+其主要工作在`removeNode`中，我们来看其源代码：
+
+```java
+final Node<K,V> removeNode(int hash, Object key, Object value,
+                            boolean matchValue, boolean movable) {
+    Node<K,V>[] tab; Node<K,V> p; int n, index;
+    // 要删除就要判断被删除的键值对在hash表中是否存在
+    if ((tab = table) != null && (n = tab.length) > 0 &&
+        // 判断
+        (p = tab[index = (n - 1) & hash]) != null) {
+        Node<K,V> node = null, e; K k; V v;
+        if (p.hash == hash &&
+            ((k = p.key) == key || (key != null && key.equals(k))))
+            node = p;
+        else if ((e = p.next) != null) {
+            if (p instanceof TreeNode)
+                node = ((TreeNode<K,V>)p).getTreeNode(hash, key);
+            else {
+                do {
+                    if (e.hash == hash &&
+                        ((k = e.key) == key ||
+                            (key != null && key.equals(k)))) {
+                        node = e;
+                        break;
+                    }
+                    p = e;
+                } while ((e = e.next) != null);
+            }
+        }
+        if (node != null && (!matchValue || (v = node.value) == value ||
+                                (value != null && value.equals(v)))) {
+            if (node instanceof TreeNode)
+                ((TreeNode<K,V>)node).removeTreeNode(this, tab, movable);
+            else if (node == p)
+                tab[index] = node.next;
+            else
+                p.next = node.next;
+            ++modCount;
+            --size;
+            afterNodeRemoval(node);
+            return node;
+        }
+    }
+    // 被删除的键值对不存在，返回null
+    return null;
+}
+```
 
 
-### 0x03 resize方法
+
+### 0x04 resize方法
+
+
+
+
 
 
 

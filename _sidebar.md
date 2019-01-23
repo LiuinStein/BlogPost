@@ -6,8 +6,7 @@
   * [0x04 计算机基础学科](anthologies/fundamental/)
   * [0x05 网站运维日记](anthologies/this-website/)
   * [0x06 常见工具的使用](anthologies/tools/)
-* **0x01 译作**
-  * [0x00 Restful API设计指南](translations/)
+* [**0x01 译作**](translations/)
 * **0x02 读书**
   * [0x00 读书为之何](readings/)
   * [0x01 书单](readings/list)
