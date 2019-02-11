@@ -13,7 +13,7 @@ Hi, 各位大佬你们好啊，欢迎来到我的小站，我叫刘少群（$\te
 
 我是一个乐观主义者（Optimist）、爱国者（Patriotist）、主观唯心主义者（[Subjective Idealist](https://en.wikipedia.org/wiki/Subjective_idealism)）而且还是一个无神论者（Atheist）。物竞天择，适者生存（[It’s always survival of the fittest.](https://en.wikipedia.org/wiki/Survival_of_the_fittest)）是我的方法论。这句话是由进化论（Theory of Evolution）的作者达尔文（Darwin）首先提出来的。
 
-兴趣上喜欢英语语言，喜欢西方文化，尤其喜欢翻译的工作，其中最为让我敬佩的人是号称“诗译英法唯一人”的翻译大家[许渊冲](https://en.wikipedia.org/wiki/Xu_Yuanchong)大师，其提倡的诗词翻译工作中应做到的“三美”论（意美、音美、形美）真是让人受益匪浅。此处摘抄两句我最喜欢的许老先生的翻译作品：
+热衷并从事于[世界上最大的共产主义事业](https://www.reddit.com/r/ProgrammerHumor/comments/7t3e0d/did_somebody_say_communism/)——开源软件事业。试看将来的环球，必是赤旗的世界！兴趣上喜欢英语语言，喜欢西方文化，尤其喜欢翻译的工作，其中最为让我敬佩的人是号称“诗译英法唯一人”的翻译大家[许渊冲](https://en.wikipedia.org/wiki/Xu_Yuanchong)大师，其提倡的诗词翻译工作中应做到的“三美”论（意美、音美、形美）真是让人受益匪浅。此处摘抄两句我最喜欢的许老先生的翻译作品：
 
 > 山下山下，风展红旗如画
 >
