@@ -1,6 +1,6 @@
 ### 0x00 背景知识
 
-首先`HashMap`是基于hash表的，hash表的相关知识及其存储原理，可以参考我之前写的一篇文章：[查找算法总结](/anthologies/algorithm/查找?id=_0x02-哈希表)，要着重看此文章关于冲突处理所讲述的拉链法。
+首先`HashMap`是基于hash表的，hash表的相关知识及其存储原理，可以参考我之前写的一篇文章：[查找算法总结](/anthologies/fundamental/algorithm/查找?id=_0x02-哈希表)，要着重看此文章关于冲突处理所讲述的拉链法。
 
 ![](https://bucket.shaoqunliu.cn/image/0209.png)
 
@@ -187,16 +187,20 @@ final Node<K,V> removeNode(int hash, Object key, Object value,
     Node<K,V>[] tab; Node<K,V> p; int n, index;
     // 要删除就要判断被删除的键值对在hash表中是否存在
     if ((tab = table) != null && (n = tab.length) > 0 &&
-        // 判断
+        // 判断被删除元素hash码值是否在表中存在
         (p = tab[index = (n - 1) & hash]) != null) {
-        Node<K,V> node = null, e; K k; V v;
+        Node<K,V> node = null, e; K k; V v;.
+        // p.hash在Node<K,V>构造时就已经赋值，详见其构造函数
+        // 判断被删除元素是否在拉链中存在
         if (p.hash == hash &&
             ((k = p.key) == key || (key != null && key.equals(k))))
             node = p;
         else if ((e = p.next) != null) {
+            // 在树中寻找被删除元素
             if (p instanceof TreeNode)
                 node = ((TreeNode<K,V>)p).getTreeNode(hash, key);
             else {
+                // 在拉链中顺序寻找被删除元素
                 do {
                     if (e.hash == hash &&
                         ((k = e.key) == key ||
@@ -210,8 +214,11 @@ final Node<K,V> removeNode(int hash, Object key, Object value,
         }
         if (node != null && (!matchValue || (v = node.value) == value ||
                                 (value != null && value.equals(v)))) {
+            // 被删除元素存在的话
             if (node instanceof TreeNode)
+                // 在树节点中删除
                 ((TreeNode<K,V>)node).removeTreeNode(this, tab, movable);
+            // p代表了拉链的第一个位置
             else if (node == p)
                 tab[index] = node.next;
             else
@@ -227,9 +234,91 @@ final Node<K,V> removeNode(int hash, Object key, Object value,
 }
 ```
 
-
-
 ### 0x04 resize方法
+
+```java
+final Node<K,V>[] resize() {
+    Node<K,V>[] oldTab = table;
+    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+    int oldThr = threshold;
+    int newCap, newThr = 0;
+    if (oldCap > 0) {
+        if (oldCap >= MAXIMUM_CAPACITY) {
+            // 如果扩容前容量已经超出了所容许的最大容量
+            // 那么提高门限值至int类型的最大值
+            // 以防增加元素时再次触发resize操作
+            threshold = Integer.MAX_VALUE;
+            return oldTab; // 不再扩容
+        }
+        // 新容量翻番
+        else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
+                    oldCap >= DEFAULT_INITIAL_CAPACITY)
+            // 如果翻番后的容量仍小于所容许的最大容量的话
+            // 门限值也翻番
+            newThr = oldThr << 1; // double threshold
+    }
+    // 原容量==0 && 原门限值>0
+    else if (oldThr > 0) // initial capacity was placed in threshold
+        newCap = oldThr;
+    // 原容量和原门限值均为0，则全部使用默认值初始化
+    else {  // zero initial threshold signifies using defaults
+        newCap = DEFAULT_INITIAL_CAPACITY;
+        newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+    }
+    if (newThr == 0) {
+        float ft = (float)newCap * loadFactor;
+        newThr = (newCap < MAXIMUM_CAPACITY && ft < (float)MAXIMUM_CAPACITY ?
+                    (int)ft : Integer.MAX_VALUE);
+    }
+    threshold = newThr;
+    @SuppressWarnings({"rawtypes","unchecked"})
+    Node<K,V>[] newTab = (Node<K,V>[])new Node[newCap];
+    table = newTab;
+    if (oldTab != null) {
+        for (int j = 0; j < oldCap; ++j) {
+            Node<K,V> e;
+            if ((e = oldTab[j]) != null) {
+                oldTab[j] = null;
+                if (e.next == null)
+                    newTab[e.hash & (newCap - 1)] = e;
+                else if (e instanceof TreeNode)
+                    ((TreeNode<K,V>)e).split(this, newTab, j, oldCap);
+                else { // preserve order
+                    Node<K,V> loHead = null, loTail = null;
+                    Node<K,V> hiHead = null, hiTail = null;
+                    Node<K,V> next;
+                    do {
+                        next = e.next;
+                        if ((e.hash & oldCap) == 0) {
+                            if (loTail == null)
+                                loHead = e;
+                            else
+                                loTail.next = e;
+                            loTail = e;
+                        }
+                        else {
+                            if (hiTail == null)
+                                hiHead = e;
+                            else
+                                hiTail.next = e;
+                            hiTail = e;
+                        }
+                    } while ((e = next) != null);
+                    if (loTail != null) {
+                        loTail.next = null;
+                        newTab[j] = loHead;
+                    }
+                    if (hiTail != null) {
+                        hiTail.next = null;
+                        newTab[j + oldCap] = hiHead;
+                    }
+                }
+            }
+        }
+    }
+    return newTab;
+}
+```
 
 
 

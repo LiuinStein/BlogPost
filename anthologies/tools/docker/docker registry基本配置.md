@@ -97,7 +97,7 @@ environment:
 
 > [redis - Configuring a registry](https://docs.docker.com/registry/configuration/#redis)
 
-
+### 0x03 nginx代理转发
 
 
 

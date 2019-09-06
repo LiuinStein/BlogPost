@@ -5,26 +5,13 @@
 </p>
 
 
-> 我与一台1989年美国AT&T公司生产的电脑
+> 点亮了一台1989年美国AT&T公司生产的电脑。
 
-Hi, 各位大佬你们好啊，欢迎来到我的小站，我叫刘少群（$\text{Li}\acute{\text{u}}\text{ Sh}\grave{\text{a}}\text{o Q}\acute{\text{u}}\text{n}$），有一个外国名字叫Shaoqun Liu 或者 LiuinStein，曾经了解过一点信息安全方面的知识，艺名叫汉字（$\text{H}\grave{\text{a}}\text{n Z}\grave{\imath}$），我一般将其解释为勿忘自己的国家、勿忘自己的语言、勿忘自己的文字，故名汉字，时刻提醒我牢记这三点。
+Hi, 各位大佬你们好啊，欢迎来到我的小站，我叫刘少群（$\text{Li}\acute{\text{u}}\text{ Sh}\grave{\text{a}}\text{o Q}\acute{\text{u}}\text{n}$），有一个外国名字叫Shaoqun Liu 或者 LiuinStein。
 
-雄辩（[Eloquence](https://en.wikipedia.org/wiki/Eloquence)），且擅长诡辩论（[Sophist](https://en.wikipedia.org/wiki/Sophist)），性格上稍有一点NPD倾向（[Narcissistic Personality Disorder](https://en.wikipedia.org/wiki/Narcissistic_personality_disorder) 自恋型人格障碍），轻微的[Rejection Sensitivity](https://en.wikipedia.org/wiki/Social_rejection#Rejection_sensitivity)（拒绝敏感），有时候会出于自我保护的意识会有一点[Persecutory delusions](https://en.wikipedia.org/wiki/Persecutory_delusion)（被害妄想症）。
+热衷并从事于[世界上最大的共产主义事业](https://www.reddit.com/r/ProgrammerHumor/comments/7t3e0d/did_somebody_say_communism/)——开源软件事业。GitHub请点击页面右上角。试看将来的环球，必是赤旗的世界！
 
-我是一个乐观主义者（Optimist）、爱国者（Patriotist）、辩证唯物主义者（[Dialectical materialism](https://en.wikipedia.org/wiki/Dialectical_materialism)）而且还是一个无神论者（Atheist）。物竞天择，适者生存（[It’s always survival of the fittest.](https://en.wikipedia.org/wiki/Survival_of_the_fittest)）是我的方法论。这句话是由进化论（Theory of Evolution）的作者达尔文（Darwin）首先提出来的。
-
-热衷并从事于[世界上最大的共产主义事业](https://www.reddit.com/r/ProgrammerHumor/comments/7t3e0d/did_somebody_say_communism/)——开源软件事业。试看将来的环球，必是赤旗的世界！兴趣上喜欢英语语言，喜欢西方文化，尤其喜欢翻译的工作，其中最为让我敬佩的人是号称“诗译英法唯一人”的翻译大家[许渊冲](https://en.wikipedia.org/wiki/Xu_Yuanchong)大师，其提倡的诗词翻译工作中应做到的“三美”论（意美、音美、形美）真是让人受益匪浅。此处摘抄两句我最喜欢的许老先生的翻译作品：
-
-> 山下山下，风展红旗如画
->
-> Below, Below;
-> The wind unrolls;
-> Red flags like scrolls.
->
-> 千山鸟飞绝，万径人踪灭
->
-> From hill to hill no bird in flight;
-> From path to path no man in sight.
+喜欢研究英语，喜欢西方文化，尤其喜欢翻译的工作，敬佩翻译大家[许渊冲](https://en.wikipedia.org/wiki/Xu_Yuanchong)大师。
 
 我的工作态度是：
 
@@ -48,6 +35,8 @@ Hi, 各位大佬你们好啊，欢迎来到我的小站，我叫刘少群（$\te
 - Printerest：[Shaoqun-Liu](https://www.pinterest.com/liuinstein/)
 - Reddit：[liuinstein](https://www.reddit.com/user/liuinstein/)
 - Google+：[Shaoqun Liu](https://plus.google.com/u/0/116980400792593323885)
+
+> 只看，很少发表评论在上面。
 
 ### 0x02 联系方式
 
@@ -89,7 +78,7 @@ $$
 
 ### 0x03 关于这个网站
 
-我有一个可爱的女朋友，从高中开始我们两个就在一起了，大学四年换句话说异地恋四年吧，我女朋友确实给了我莫大的支持，四年下来我都没像其他情侣一样，去这儿玩去那儿玩，整天缠绵在一起，我白天在实验室，晚上回宿舍，然后给女朋友打0.5-1个小时左右的电话，一年下来真正在一块的时间也就十几天吧，所以我就想啊，干脆就弄一个网站，弄一本书吧，把我这几年的实验室生涯中所做的一些工作、我之前的作品、研究成果以及我这大学四年所为之倾注的心血都整理下来，让她更加深入地了解一下我这些年都干了些啥、都学了些啥。
+我有一个可爱的女朋友，从高中开始我们两个就在一起了，大学四年换句话说异地恋四年吧，我女朋友确实给了我莫大的支持，四年下来我都没像其他情侣一样，去这儿玩去那儿玩，整天缠绵在一起，我白天在实验室，晚上回宿舍，然后给女朋友打0.5-1个小时左右的电话，一年下来真正在一块的时间也就十几天吧，所以我就想啊，干脆就弄一个网站，弄一本书吧，把我这几年的实验室生涯中所做的一些工作、我之前的作品、研究成果以及我这大学四年所为之倾注的心血都整理下来，让她更加深入地了解一下我这些年都学了些啥，顺便也让我留个念想或记忆。
 
 > And I think it’s gonna be a long long time
 >
@@ -114,12 +103,10 @@ $$
 - 2017年03月01日：撤销shaoqunliu.com的DNS解析，并将长期持有此域名
 - 2018年07月23日：shaoqunliu.com域名注销且不再持有，从此主要使用域名shaoqunliu.cn
 - 2018年12月30日：因WordPress对$\LaTeX$的支持实在是太过羸弱，而且用的时间长了难免有些审美疲劳，于是基于`docsify`重新组装了一套blog系统
+- 2019年06月21日：注册域名bypass-stupid-things.tk
+- 2019年06月30日：www.bypass-stupid-things.tk域名功能成功上线，用于Across the Great Wall we can reach every corner in the world.
 
-### 0x05 站点技术栈
-
-本站使用基于`nodejs`的`docsify`做成，使用腾讯云的对象存储实现网站的动静分离，使得网站的静态内容部分（css或js以及各种图片等）得以快速地加载，并使用腾讯云CDN做内容分发以及隐藏网站服务器真实IP地址。同时如果使用IP地址直接访问网站的话，nginx会将所有请求照单全部转发至`www.baidu.com`。网站使用TrustAsia提供的免费SSL证书做加密传输。网站程序全部部署于docker容器内，每月自动升级容器内相关程序组件，以及使用`docker commit`命令将其做成新的镜像，以便崩溃后将损失降至最小。
-
-### 0x06 版权和捐赠
+### 0x05 版权和捐赠
 
 本网站的所有作品除有特殊标明的以外，全部采用[知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议](https://creativecommons.org/licenses/by-nc-nd/4.0/)进行许可。
 
@@ -127,8 +114,8 @@ $$
 
 如果你想捐赠本网站，请点击[donate](donate)。
 
-### 0x07 备案信息
+### 0x06 备案信息
 
 应工信部要求，在网站底部放入备案号：鲁ICP备16049661号。
 
-**本网站部分功能需要科学上网才能使用**，比如评论功能所使用的Disqus，以及部分js文件的加载需要链接到unpkg，因为众所周知的原因，这个网站在国内的访问也时好时坏。
+**本网站部分功能需要科学上网才能使用**，例如评论功能所使用的Disqus。

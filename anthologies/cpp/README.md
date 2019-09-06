@@ -13,3 +13,7 @@
 [C++11锁](/anthologies/cpp/C++11锁) 本文共3724字，阅读大约需要15分钟
 
 > 本文介绍了C++11并发编程中对锁的使用，包括`std::mutex`, 递归锁`recusive_mutex`以及时间锁`std::timed_mutex`和`std::recusive_timed_mutex`，以及RAII风格的加锁等
+
+[INT_MIN的使用](/anthologies/cpp/INT_MIN) 本文共615字，阅读大约需要3分钟
+
+> 众所周知，在`limits.h`头文件中对`INT_MIN`的定义是`(-2147483647-1)`，为什么不直接将其写成-2147483648呢？使用`abs`函数对`INT_MIN`求绝对值为什么结果还是`INT_MIN`呢？这一切的背后，是人性的扭曲还是道德的沦丧？敬请阅读此文！

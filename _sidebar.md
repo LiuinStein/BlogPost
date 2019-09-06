@@ -1,16 +1,15 @@
 * **0x00 文集**
-  * [0x00 MySQL优化指南](anthologies/mysql-optimization/)
+  * [0x00 深度学习](anthologies/ml/)
   * [0x01 C\C++学习笔记](anthologies/cpp/)
-  * 0x02 Java学习笔记
-  * [0x03 数据结构与算法](anthologies/algorithm/)
-  * [0x04 计算机基础学科](anthologies/fundamental/)
-  * [0x05 网站运维日记](anthologies/this-website/)
-  * [0x06 常见工具的使用](anthologies/tools/)
+  * [0x02 Java后端开发](https://github.com/LiuinStein/interview-preparing)
+  * [0x03 计算机基础学科](anthologies/fundamental/)
+  * [0x04 网站运维日记](anthologies/this-website/)
+  * [0x05 常用工具及数据库](anthologies/tools/)
 * [**0x01 译作**](translations/)
-* **0x02 读书**
+* **0x02 读书看论文**
   * [0x00 读书为之何](readings/)
-  * [0x01 书单](readings/list)
+  * [0x01 清单](readings/list)
 * [**0x03 随笔**](essays/)
-* [**0x04 博物馆**](museum/)
+* [**0x04 我的博物馆**](museum/)
 * [**0x05 作者简介**](/)
 

@@ -67,12 +67,3 @@
 > 英文原文地址：[REST API Versioning](https://restfulapi.net/versioning/)
 >
 > 本文讲述了对于API而言，版本控制的重要性以及如何进行版本控制，注意，此处主讲的为API的版本控制，而不是有关代码的版本控制。
-
-## 0x01 Docker Guides（正在进行）
-
-此部分为[Docker官方文档Guides部分](https://docs.docker.com/)翻译文稿。翻译工作对原文做了重新排版！
-
-### Get Started
-
-#### Get started with docker 
-
