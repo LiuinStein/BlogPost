@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Description">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://bucket.shaoqunliu.cn/docsify-cache/statics/css/vue.css">
 </head>
+
 <body>
   <div id="app"></div>
   <script>
     window.$docsify = {
-      name: 'Shaoqun Liu bites WTH',
+      name: 'Shaoqun Liu\'s here',
       repo: 'LiuinStein',
       notFoundPage: true,
       disqus: 'liuinstein',
@@ -34,7 +37,7 @@
       },
       markdown: {
         renderer: {
-          code: function(code, lang) {
+          code: function (code, lang) {
             if (lang === "mermaid") {
               return (
                 '<div class="mermaid">' + mermaid.render('mermaid-svg-' + id++, code) + "</div>"
@@ -46,18 +49,18 @@
       },
       plugins: [
         function (hook, vm) {
-            hook.doneEach(function (html) {
-              Prism.highlightAll() // Code Highlighting
-              if (typeof MathJax !== 'undefined') {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub])
-              }
-            })
+          hook.doneEach(function (html) {
+            Prism.highlightAll() // Code Highlighting
+            if (typeof MathJax !== 'undefined') {
+              MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+            }
+          })
         }
       ]
     }
   </script>
 
-  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/docsify.min.js"></script> 
+  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/docsify.min.js"></script>
 
   <!-- LaTeX -->
   <script type="text/x-mathjax-config">
@@ -97,7 +100,7 @@
 				blacker: 0
       },
       skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
-      showMathMenu: false,
+      showMathMenu: true,
       menuSettings: {
         zoom: "Hover",
         renderer: "SVG"
@@ -108,7 +111,8 @@
          "https://bucket.shaoqunliu.cn/docsify-cache/statics/js/mathjax/fonts/HTML-CSS";
     });
   </script>
-  <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script
+    src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   <!-- Code Highlighting -->
   <script src="https://bucket.shaoqunliu.cn/docsify-cache/statics/js/prism/prism-core.min.js"></script>
@@ -134,4 +138,5 @@
     console.log("Looking for something interesting? Here we go: https://www.shaoqunliu.cn/security.html");
   </script>
 </body>
+
 </html>

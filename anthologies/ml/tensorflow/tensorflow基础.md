@@ -336,10 +336,10 @@ $$
 
 假设对于函数$f(x)=x^2$，我们要通过梯度下降找出其最小值，假设学习率我们固定为0.25，当前位置$x_0=3$，我们来逐步进行梯度下降：
 $$
-f(x)=x^2\Rightarrow f'(x)=2x\\
-\text{step 1. }~x=3-0.25\times2\times 3=1.5 \\
-\text{step 2. }~x=1.5-0.25\times2\times 1.5=0.75 \\
-\text{step 3. }~x=0.75-0.25\times2\times 0.75=0.375 \\
+f(x)=x^2\Rightarrow f'(x)=2x \\ 
+\text{step 1. }~x=3-0.25\times2\times 3=1.5 \\ 
+\text{step 2. }~x=1.5-0.25\times2\times 1.5=0.75 \\ 
+\text{step 3. }~x=0.75-0.25\times2\times 0.75=0.375 \\ 
 \cdots
 $$
 通过梯度下降，$x$的值逐渐向$f(x)$的最小值点$x=0$靠近了。
@@ -348,8 +348,8 @@ $$
 
 二次代价函数的数学表达实为：
 $$
-C=\frac{1}{2n}\sum_x(y-\text{prediction})^2 \\
-\text{prediction}=\sigma(z) \\
+C=\frac{1}{2n}\sum_x(y-\text{prediction})^2 \\ 
+\text{prediction}=\sigma(z) \\ 
 z=wx+b
 $$
 其中：
@@ -366,15 +366,15 @@ loss = tf.reduce_mean(tf.square(y - prediction))
 
 我们假设只有一组样本，来对上述的公式进行简化得：
 $$
-C=\frac{(y-\text{prediction})^2}{2}\\
-\text{prediction}=\sigma(z) \\
+C=\frac{(y-\text{prediction})^2}{2} \\ 
+\text{prediction}=\sigma(z) \\ 
 z=wx+b
 $$
 在深度学习的过程中，我们通过梯度下降的方法不断优化$w$和$b$的值，使最终产生的代价函数值尽可能地小。由此，对上述简化的例子，在梯度下降时所使用的2个偏导数分别为：
 $$
-\frac{\partial C}{\partial w}=(y-\text{prediction})\sigma'(z)x \\
-\frac{\partial C}{\partial b}=(y-\text{prediction})\sigma'(z) \\
-\text{prediction}=\sigma(z) \\
+\frac{\partial C}{\partial w}=(y-\text{prediction})\sigma'(z)x \\ 
+\frac{\partial C}{\partial b}=(y-\text{prediction})\sigma'(z) \\ 
+\text{prediction}=\sigma(z) \\ 
 z=wx+b
 $$
 由上式，我们发现其梯度下降的速度与激活函数的导数成正比，激活函数的导数越大，w和b调整地就越快，训练收敛地也就越快。鉴于，我们一般使用sigmoid函数作为激活函数，我们来看一下这个函数的图像：
@@ -385,14 +385,14 @@ $$
 
 由此，我们抛弃了二次代价函数，引入了交叉熵代价函数，其基本的数学形式如下：
 $$
-C=-\frac{1}{n}\sum_x[y\ln(\text{prediction})+(1-y)\ln(1-\text{prediction})] \\
-\text{prediction}=\sigma(z) \\
+C=-\frac{1}{n}\sum_x[y\ln(\text{prediction})+(1-y)\ln(1-\text{prediction})] \\ 
+\text{prediction}=\sigma(z) \\ 
 z=wx+b
 $$
 我们对交叉熵代价函数求导可得：
 $$
-\frac{\partial C}{\partial w}=\frac{1}{n}\sum_x x(\sigma(z)-y) \\
-\frac{\partial C}{\partial b}=\frac{1}{n}\sum_x (\sigma(z)-y) \\
+\frac{\partial C}{\partial w}=\frac{1}{n}\sum_x x(\sigma(z)-y) \\ 
+\frac{\partial C}{\partial b}=\frac{1}{n}\sum_x (\sigma(z)-y) \\ 
 z=wx+b
 $$
 由此，我们可以看出，当误差$\sigma(z)-y$越大，参数w和b调整的速度就越快，梯度下降的速率也就越大。
