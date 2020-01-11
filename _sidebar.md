@@ -6,9 +6,7 @@
   * [0x04 网站运维日记](anthologies/this-website/)
   * [0x05 常用工具及数据库](anthologies/tools/)
 * [**0x01 译作**](translations/)
-* **0x02 读书看论文**
-  * [0x00 读书为之何](readings/)
-  * [0x01 清单](readings/list)
+* [**0x02 小项目**](projects/)
 * [**0x03 随笔**](essays/)
 * [**0x04 我的博物馆**](museum/)
 * [**0x05 作者简介**](/)
