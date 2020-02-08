@@ -66,3 +66,156 @@ UUID的生成即可交给数据库去做，比如可以在MySQL数据库中使�
 ```
 
 除此之外，还可以自定义精简版的Snowflake算法，比如缩小64位至53位。
+
+好了，我们来自个实现一下Snowflake算法：
+
+```java
+import java.util.concurrent.atomic.AtomicLong;
+
+public class SnowflakeIdentifierHelper {
+
+    private final long twepoch;  // 起始时间戳
+    private final int timestampBits;  // 时间戳的位数
+    private final int workerIdentifier;  // 工作机器id
+    private final int workerIdentifierBits;  // 工作机器id的位数
+    private final int sequenceBits;  // 最后序列号的位数
+    // 毫秒内序列号
+    private final AtomicLong sequence = new AtomicLong(0);
+    // 最后一次生成id的时间戳
+    private final AtomicLong lastTimeStamp = new AtomicLong(0);
+
+    public SnowflakeIdentifierHelper(int workerIdentifier, long twepoch) {
+        this(41, 10, 12, workerIdentifier, twepoch);
+    }
+
+    public SnowflakeIdentifierHelper(int timestampBits, int workerIdentifierBits, int sequenceBits, int workerIdentifier, long twepoch) {
+        this.timestampBits = timestampBits;
+        this.workerIdentifier = workerIdentifier;
+        this.workerIdentifierBits = workerIdentifierBits;
+        // 确保输入的工作机器id在其bit位数所限制的范围之内
+        if (workerIdentifier >= (1 << workerIdentifierBits)) {
+            throw new IllegalArgumentException("The worker's id not matches the specific length of bits of it.");
+        }
+        this.sequenceBits = sequenceBits;
+        // 确保所有部分的位数加和小于等于63，以防long溢出
+        if (this.timestampBits + this.workerIdentifierBits + this.sequenceBits > 63) {
+            throw new IllegalArgumentException("The length of bits of Snowflake identifiers is larger than the length of a long integer.");
+        }
+        this.twepoch = twepoch;
+    }
+
+    public long generate() throws InterruptedException {
+        long timestamp;
+        synchronized (lastTimeStamp) {
+            timestamp = System.currentTimeMillis() - twepoch;
+            // 必须是1L而不能是1，因为1是int型，1L是long型，1<<41的结果会导致整型溢出
+            if (timestamp >= (1L << timestampBits)) {
+                throw new RuntimeException("Timestamp overflows.");
+            }
+            // 生成的时间戳小于最后一次生成的时间戳即出现了时钟回拨现象
+            if (timestamp < lastTimeStamp.get()) {
+                throw new RuntimeException("Clock moved backwards.");
+            }
+            // 归零毫秒内计数器，如果毫秒变了的话
+            if (timestamp != lastTimeStamp.get()) {
+                sequence.set(0);
+            }
+            lastTimeStamp.set(timestamp);
+        }
+        long sequenceNumber = sequence.incrementAndGet();
+        if (sequenceNumber >= (1L << sequenceBits)) {
+            // 如果当前毫秒内计数器值超过其最大值，那就小睡1ms再生成一遍
+            Thread.sleep(1);
+            return generate();
+        }
+        return (timestamp << (workerIdentifierBits + sequenceBits)) +
+                (workerIdentifier << sequenceBits) + sequenceNumber;
+    }
+}
+
+```
+
+> TL;DR
+>
+> 在`generate()`函数中为什么要用`synchronized`？
+>
+> 我们必须用`synchronized`框起所有与时间戳计算有关的部分，原因在于`lastTimeStamp`是所有线程的共享变量，`AtomicLong`仅保证其在加减运算时是线程安全的，并不能保证下面的代码也是线程安全的：
+>
+> ```java
+> timestamp = System.currentTimeMillis() - twepoch;
+> if (timestamp >= (1L << timestampBits)) {
+>     throw new RuntimeException("Timestamp overflows.");
+> }
+> if (timestamp < lastTimeStamp.get()) {
+>     throw new RuntimeException("Clock moved backwards.");
+> }
+> if (timestamp != lastTimeStamp.get()) {
+>     sequence.set(0);
+> }
+> lastTimeStamp.set(timestamp);
+> ```
+>
+> 在上述代码片中，假设线程1执行了第一行代码，得到的时间戳我们假设是10000，此时处理器切换到了线程2，线程2也得到了一个时间戳假设是20000，线程2执行完了所有的代码，线程2执行完成最后一行代码代码之后将`lastTimeStamp`设置成了自己生成的时间戳20000，这个时候线程2再切换到线程1继续执行的话，就会抛出`RuntimeException("Clock moved backwards.")`。线程1就会错误地认为时钟回拨了。所以我们必须让所有有关时间戳的代码并发执行一次完成。
+>
+> 为什么要用`AtomicLong`而不直接用`long`？
+>
+> 在32位操作系统中，64位的`long`和`double`变量由于会被JVM当作两个分离的32位来进行操作，所以不具有原子性。而使用`AtomicLong`能让`long`的操作保持原子型。
+
+上面这份代码的`id`生成效率是非常高的，我们用如下测试代码生成了1亿条`id`，耗时46.653s。
+
+```java
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        // 假设worker id是101，起始时间戳是1577808000L
+        SnowflakeIdentifierHelper helper = new SnowflakeIdentifierHelper(101, 1577808000L);
+        // 创建包含16个线程的线程池
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(16);
+        FileOutputStream fileOutputStream = new FileOutputStream(new File("F:/Desktop/ids.txt"));
+        // 循环调用1000次
+        for (int j = 0; j < 1000; j++) {
+            executor.execute(() -> {
+                // 每个线程生成100000条id并写入文件
+                for (int i = 0; i < 100000; i++) {
+                    try {
+                        long id = helper.generate();
+                        // 将整数型的id转换成二进制字符串
+                        // 方便我们对比查看程序输出结果是否有误
+                        String s = Long.toBinaryString(id);
+                        // toBinaryString函数会将二进制结果前面的0舍弃，我们给它手动加上
+                        s = s.length() == 63 ? "0" + s : s;
+                        String result = s.charAt(0) + " " + s.substring(1, 42) + " " + s.substring(42, 52) + " " + s.substring(52, 64) + "\r\n";
+                        fileOutputStream.write(result.getBytes());
+                    } catch (InterruptedException | IOException ignored) {
+
+                    }
+                }
+            });
+        }
+        fileOutputStream.flush();
+        executor.shutdown();
+    }
+}
+```
+
+此后我们将结果转换成二进制字符串写入文件，生成的`id`文件占地6.58GB，我们将程序的输出文件中节选了10条，如下：
+
+```
+0 10110111111000111001111000000000101101101 0001100101 000000000011
+0 10110111111000111001111000000000101101011 0001100101 000000000100
+0 10110111111000111001111000000000101101110 0001100101 000000000011
+0 10110111111000111001111000000000110110011 0001100101 000000000001
+0 10110111111000111001111000000000110110100 0001100101 000000000001
+0 10110111111000111001111000000000110110100 0001100101 000000000010
+0 10110111111000111001111000000000101101110 0001100101 000000000010
+0 10110111111000111001111000000000110110100 0001100101 000000000100
+0 10110111111000111001111000000000110110100 0001100101 000000000111
+0 10110111111000111001111000000000110110100 0001100101 000000000110
+```
+
