@@ -38,6 +38,18 @@ int threshold;
 final float loadFactor;
 ```
 
+**`HashMap`和`HashTable`的区别**
+
+首先，`HashMap`是非线程安全的，而`HashTable`则是线程安全的，也因此，`HashMap`的效率较高。除此之外，在`HashMap`中`null`可以用来作为键，而`HashTable`则不可以，否则抛出`NullPointerException`。
+
+**`HashMap`和`HashSet`的区别**
+
+`HashSet`底层基于`HashMap`实现，其实现了`Set`接口，仅用来存储对象而不是键值对。而且`HashSet`较`HashMap`效率低。
+
+**`HashMap`的长度为什么是2的幂次方**
+
+因为经计算出来的hash值需要对数组长度进行取余运算，然后用余数定位其在hash表中的位置，为了优化取余运算的效率，人们发现取余(%)操作中如果除数是2的幂次则等价于与其除数减一的与(\&)操作，即：hash%length​等价于hash\&(length-1)，前提是length是2的n次方，采用二进制位操作\&，相对于%能够提高运算效率。
+
 ### 0x01 put方法
 
 先来看一张流程图：
@@ -125,6 +137,97 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 ```
 
 在上述两个代码中，我们可以看到两个方法`afterNodeAccess`和`afterNodeInsertion`这两个方法在`HashMap`里面的实现是空的，在此处什么都不做，其注释中写道：Callbacks to allow `LinkedHashMap ` post-actions，即适用于`LinkedHashMap `实现一些后置功能的回调函数。
+
+**JDK7 `put`方法为什么线程不安全**
+
+**以下内容仅适用于JDK7之前的版本，即对链表的插入方法为头插法，JDK8以后，链表的插入方法改为了尾插法，从此之后就不存在这个问题了**。
+
+众所周知，`HashMap`不是线程安全的，多线程的情况下操作`HashMap`的`put`操作有可能导致死循环，原因在于`HashMap`扩容使用的`resize`方法，由于扩容是新建一个数组，然后复制原数据到数组，由于数组下标挂有链表，所以需要复制链表，但多线程操作有可能导致环形链表。
+
+我们先来看JDK7 `HashMap`实现中的`transfer`方法：
+
+```java
+void transfer(Entry[] newTable, boolean rehash) {
+    int newCapacity = newTable.length;
+    for (Entry<K,V> e : table) {
+        while(null != e) {
+            Entry<K,V> next = e.next;
+            if (rehash) {
+                e.hash = null == e.key ? 0 : hash(e.key);
+            }
+            int i = indexFor(e.hash, newCapacity);
+            e.next = newTable[i]; // 才用头插入，在链表头部插入元素
+            newTable[i] = e; // 线程执行完上一行后，在此处挂起
+            e = next; // 循环遍历链表内元素
+        }
+    }
+}
+```
+
+我们假设没有执行`resize`之前`Entry`数组的结构如下：
+
+![](https://bucket.shaoqunliu.cn/image/0367.png)
+
+则其在单线程的情况下，正确执行扩容操作后的样子如下：
+
+![](https://bucket.shaoqunliu.cn/image/0368.png)
+
+好了，现在我们来看多线程的情况，假设线程A执行扩容操作，在上述代码片中标记部分线程A被挂起，则目前线程A内的状态如下：
+
+![](https://bucket.shaoqunliu.cn/image/0369.png)
+
+这个时候线程B介入了，线程B也想进行扩容操作，而且恰好线程B的扩容操作还操作完了，则线程B内的状态如下：
+
+![](https://bucket.shaoqunliu.cn/image/0370.png)
+
+这是对于值为3, 7, 5的这三个对象来说，其状态为：
+
+```java
+tab[1]=5, 5.next=null
+tab[3]=7, 7.next=3, 3.next=null
+```
+
+然后CPU又切换时间片到线程A，线程A继续运行，在Java中代码中的临时变量`e`和`next`实际上都为引用类型变量。线程A继续操作，线程A的`newTable`变为了如下状态：
+
+![](https://bucket.shaoqunliu.cn/image/0371.png)
+
+继续循环：
+
+```JAVA
+e=7
+next=e.next ----> next=3【从主存中取值】
+e.next=newTable[3] ----> e.next=3（7.next=3）【从主存中取值】
+newTable[3]=e ----> newTable[3]=7
+e=next ----> e=3
+```
+
+此时状态如下：
+
+![](https://bucket.shaoqunliu.cn/image/0373.png)
+
+`e=3`于是又再一次进入循环：
+
+```java
+e=3
+next=e.next ----> next=null
+e.next=newTable[3] ----> e.next=7（3.next=7）
+newTable[3]=e ----> newTable[3]=3
+e=next ----> e=null
+```
+
+此时线程状态如下，并结束循环：
+
+![](https://bucket.shaoqunliu.cn/image/0372.png)
+
+此时`newTable[3]`中所保存的链表即成了循环链表，当查找一个元素，假设说8，经计算`indexOf(8) = 3`，那么将会在`table[3]`所存储链表中查找，此时`get(8)`操作即为一个死循环。
+
+**JDK8之后的`put`方法为什么线程不安全？**
+
+JDK8中链表的插入方法由JDK7中的头插入改为了尾插入，所以上面会导致死循环的那个问题在JDK8中已经不复存在了。但`HashMap`依旧是线程不安全的，因为写入丢失。
+
+现在考虑一种情况，2个线程同时要向一个`HashMap`中插入元素，而这两个元素恰好又有相同的hash值，假设这个hash值所对应的数组下标所在位置原先是没有元素的，那线程1直接进行赋值，然后CPU切换到了线程2，线程2又进行了一次直接复制，线程2赋的值覆盖了线程1的值，导致了写入丢失的问题。
+
+其次，如果线程1和2向`HashMap`插入元素时，需要进行扩容操作的话，线程1和线程2都会各自生成各自的`newTab`，然后最后`tab = resize()`，到最后`table`里面只保存了最后一个线程的`newTab`，其余线程的均会丢失。
 
 ### 0x02 get方法
 
