@@ -40,6 +40,10 @@ docker三剑客一般指docker, docker-compose, docker-machine三种工具。
 
 > 本文讲述了私服中GitLab网页的相关使用，主要涉及项目的权限设置、项目移交、项目成员管理以及跨组分享
 
+[配置Git的SSH登陆](/anthologies/tools/git/git-ssh) 本文共305字，阅读大约需要2分钟
+
+> 本文讲述了如何生成`ssh` RSA公私钥，以及如何将其运用到git中。
+
 #### 0x02 MySQL及其优化
 
 ##### 0x00 MySQL性能剖析及基准测试
