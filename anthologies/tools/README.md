@@ -61,3 +61,9 @@ docker三剑客一般指docker, docker-compose, docker-machine三种工具。
 [2.1 数据类型优化](/anthologies/tools/mysql-optimization/0x01%20数据库结构数据类型优化/数据类型优化) 本文共3189字，阅读大约需要12分钟
 
 > 本文叙述了在进行数据类型优化和选择时的基本原则、MySQL各种数据类型的时间及空间效率及适用场景、标识列的选择原则
+
+#### 0x03 其它
+
+[Crontab](/anthologies/tools/others/crontab) 本文共394字，阅读大约需要2分钟
+
+> 本文详细讲述了Crontab的定时任务时间表编制规则。
